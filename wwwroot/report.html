@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Report</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="row" style="margin-top: 30px;">
+            <div class="col-md-12">
+                <h1 class="text-center">Uplay Web Test Report by Max Fu</h1>
+            </div>
+        </div>
+        <div class="row">
+            <ol>
+                <li>The project is basically keep the original structure to keep the test simple</li>
+                <li>Entry point after build <a href="http://localhost:56653">http://localhost:56653</a></li>
+                <li>
+                    New added or updated folder and files
+                    <ul>
+                        <li>wwwroot/css</li>
+                        <li>wwwroot/js</li>
+                        <li>wwwroot/app.js</li>
+                        <li>wwwroot/index.html</li>
+                        <li>Controllers</li>
+                    </ul>
+                </li>
+                <li>Use angularJs(1.7.2) as the framework to perform the data binding between webapi and client side</li>
+                <li>Use bootstrap(4.1.2) library for the UI styling</li>
+                <li>The 3rd party library(angularJs and bootstrap) already included in the project folder</li>
+                <li>
+                    Implemented web apis
+                    <ul>
+                        <li>HttpGet: /api/games?userAccountId=xxxx, Get current or specific user owned games</li>
+                        <li>HttpGet: /api/games/ownership?userAccountId=xxxx, Get specific user owned games and status, for admin use only</li>
+                        <li>HttpGet: /api/games/all?userAccountId=xxxx, Get all games info with specific user, including those not owned by the user, for admin use only</li>
+                        <li>HttpPost: /api/games/grant, Grant a game to user without key, for admin use only</li>
+                        <li>HttpPost: /api/games/redeem, Redeem a game with key</li>
+                        <li>HttpPost: /api/games/revoke, Revoke a game with specific, for admin use only</li>
+                        <li>HttpPost: /api/login, User login</li>
+                        <li>HttpPost: /api/usres, List all users, admin use only</li>
+                        <li>HttpPost: /api/usres/update, Update user profile</li>
+                    </ul>
+                </li>
+                <li>All client side logic is in app.js and included in one body controller to simplify the design</li>
+                <li>Datebase.cs has been updated to singleton design pattern so all controllers can use the same data store in memory</li>
+                <li>The index.html contains several part of the UI, some of them are shared by the normal user and admin like user profile part, this is also for simplify the design, different view controlled by scope flag variable</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

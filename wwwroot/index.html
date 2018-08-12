@@ -1,0 +1,227 @@
+﻿<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="js/angular.min.js"></script>
+    <script src="app.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body ng-app="app" ng-controller="BodyController">
+    <!--[if lte IE 9]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">ACME</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto" ng-show="isLogin()">
+                <li class="nav-item" ng-class="(isShowProfile && !isFromManagement)?'active':''">
+                    <a class="nav-link" href="#" ng-click="showCurrentUserProfile()">My Profile</a>
+                </li>
+                <li class="nav-item" ng-class="(isShowGames&&!isFromManagement)?'active':''">
+                    <a class="nav-link" href="#" ng-click="showMyGames()">My Games</a>
+                </li>
+                <li class="nav-item" ng-show="isAdmin()" ng-class="(isShowUserManagement || isShowGames && isFromManagement || isShowProfile && isFromManagement)?'active':''">
+                    <a class="nav-link" href="#" ng-click="showUserManagement(true)">User Management</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link text-danger" href="#" ng-click="logout()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row" style="margin-top: 30px;">
+            <div class="col-md-12">
+                <h1 class="text-center" ng-show="isShowProfile && !isFromManagement">Hello - {{user.firstName}}, Welcome to ACME Games, Inc!</h1>
+                <h1 class="text-center" ng-show="isShowProfile && isFromManagement">Update User Profile</h1>
+                <h1 class="text-center" ng-hide="isLogin()">Please Login</h1>
+            </div>
+        </div>
+        <!-- Login -->
+        <!-- terry.powell@acme.com/abc123 -->
+        <div class="row" ng-hide="isLogin()">
+            <div class="col-md-12">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="txtLoginEmail" placeholder="Email" ng-model="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="txtLoginPwd" placeholder="Password" ng-model="password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-click="login()">Login</button>
+                    <label for="status" class="text-danger">{{loginStatus}}</label>
+                </form>
+            </div>
+        </div>
+
+        <!-- User Profile -->
+        <div class="row" ng-show="isShowProfile">
+            <div class="col-md-6 col-md-offset-3">
+                <form>
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" class="form-control" id="txtFirstName" ng-model="user.firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="txtLastName" ng-model="user.lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="txtEmail" placeholder="Email" ng-model="user.emailAddress">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtPwd">Password</label>
+                        <input type="password" class="form-control" id="txtPwd" placeholder="Password" ng-model="user.password">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtPwdConfirm">Confirm Password</label>
+                        <input type="password" class="form-control" id="txtPwdConfirm" placeholder="Confirm Password">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary" ng-click="updateProfile()">Update Profile</button>
+                    <button type="submit" class="btn btn-sm btn-secondary" ng-click="showUserManagement(false)" ng-show="isFromManagement">Cancel</button>
+                    <!--<label for="status">{{updateProfileStatus}}</label>-->
+                </form>
+            </div>
+        </div>
+
+        <!-- My Games -->
+        <div class="row" ng-show="isShowGames && !isFromManagement">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Game Key" aria-label="Recipient's username" aria-describedby="button-addon2" ng-model="gameKey">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" ng-click="redeemKey()">Redeem</button>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="isShowGames && !isFromManagement">
+            <div class="card col-md-3 gameCard" style="" ng-repeat="game in games">
+                <img class="card-img-top" src="{{game.thumbnail}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{game.name}}</h5>
+                    <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
+                </div>
+            </div>
+        </div>
+
+        <!-- User Owned Game ownership -->
+        <div class="row" ng-show="isShowGames && isFromManagement && !isShowGrantList">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Game Name</th>
+                        <th scope="col">Age Restriction</th>
+                        <th scope="col">Registered Date</th>
+                        <th scope="col">Thumbnail</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Operation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="game in games">
+                        <th scope="row">{{game.gameId}}</th>
+                        <td>{{game.name}}</td>
+                        <td>{{game.ageRestriction}}</td>
+                        <td>{{game.registeredDate}}</td>
+                        <td><img style="width: 25px;" src="{{game.thumbnail}}" alt="Card image cap"></td>
+                        <td>
+                            <span class="badge" ng-class="game.state == 0?'badge-success':'badge-danger'">{{game.state==0?'Owned':'Revoked'}}</span>
+                        </td>
+                        <td ng-show="game.state == 0">
+                            <a href="#" class="btn btn-sm btn-danger" ng-show="isAdmin()" ng-click="revokeUserGame(game)">Revoke</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" ng-show="isShowGames && isFromManagement && !isShowGrantList">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-sm btn-secondary" ng-click="showUserManagement(false)">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Grant user games -->
+        <div class="row" ng-show="isShowGames && isFromManagement && isShowGrantList">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Game Name</th>
+                        <th scope="col">Age Restriction</th>
+                        <th scope="col">Thumbnail</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Operation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="game in games">
+                        <th scope="row">{{game.gameId}}</th>
+                        <td>{{game.name}}</td>
+                        <td>{{game.ageRestriction}}</td>
+                        <td><img style="width: 25px;" src="{{game.thumbnail}}" alt="Card image cap"></td>
+                        <td>
+                            <span class="badge" ng-class="game.state == 0?'badge-success':((game.state == 1)?'badge-danger':'badge-secondary')">{{game.state==0?'Owned':(game.state==1?'Revoked':'NotOwned')}}</span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-primary" ng-show="game.state != 0" ng-click="grantUserGame(game)">Grant</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" ng-show="isShowGames && isFromManagement && isShowGrantList">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-sm btn-secondary" ng-click="showUserManagement(false)">Cancel</button>
+            </div>
+        </div>
+
+        <!-- User Management -->
+        <!-- User List -->
+        <div class="row" ng-show="isShowUserManagement">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Filter" aria-label="Search User" aria-describedby="button-addon2" ng-model="filterQuery">
+            </div>
+        </div>
+        <div class="row" ng-show="isShowUserManagement">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <!--<th scope="col">Password</th>-->
+                        <th scope="col">Date Of Birth</th>
+                        <th scope="col">Is Admin</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Owned Games</th>
+                        <th scope="col">Grant Games</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="user in users | userFilter : filterQuery">
+                        <th scope="row" title="{{user.userAccountId}}">{{$index + 1}}</th>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.emailAddress}}</td>
+                        <!--<td>{{user.password}}</td>-->
+                        <td>{{ConvertDateString(user.dateOfBirth)}}</td>
+                        <td><a href="#" class="btn btn-sm" ng-class="user.isAdmin?'btn-outline-success':'btn-outline-danger'">{{user.isAdmin?'Y':'N'}}</a></td>
+                        <td><a href="#" class="btn btn-sm btn-primary" ng-click="manageUserProfile(user)">Edit</a></td>
+                        <td><a href="#" class="btn btn-sm btn-info" ng-click="showUserGames(user.userAccountId)">View Games</a></td>
+                        <td><a href="#" class="btn btn-sm btn-success" ng-click="showGamesToGrant(user.userAccountId)">Grant Games</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
