@@ -15,7 +15,13 @@ namespace AcmeGames.Models
 		/// First name
 		/// </summary>
 	    public string	FirstName { get; set; }
+		/// <summary>
+		/// dev added 1
+		/// </summary>
 	    public string	LastName { get; set; }
+		/// <summary>
+		/// dev added 2
+		/// </summary>
 	    public string   FullName => $"{FirstName} {LastName}";
 	    public DateTime	DateOfBirth { get; set; }
 	    public string	EmailAddress { get; set; }
