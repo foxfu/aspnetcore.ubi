@@ -4,6 +4,9 @@ namespace AcmeGames.Models
 {
 	public class User
 	{
+		/// <summary>
+		/// Master change
+		/// </summary>
 	    public string	UserAccountId { get; set; }
 	    public string	FirstName { get; set; }
 	    public string	LastName { get; set; }
