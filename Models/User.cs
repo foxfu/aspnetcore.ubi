@@ -2,6 +2,9 @@ using System;
 
 namespace AcmeGames.Models
 {
+	/// <summary>
+	/// Dev updated
+	/// </summary>
 	public class User
 	{
 		/// <summary>
