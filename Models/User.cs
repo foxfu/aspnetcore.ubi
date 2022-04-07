@@ -18,6 +18,9 @@ namespace AcmeGames.Models
 	    public string	LastName { get; set; }
 	    public string   FullName => $"{FirstName} {LastName}";
 	    public DateTime	DateOfBirth { get; set; }
+		/// <summary>
+		/// master added 3
+		/// </summary>
 	    public string	EmailAddress { get; set; }
 		/// <summary>
 		/// master added 1
