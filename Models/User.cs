@@ -19,7 +19,13 @@ namespace AcmeGames.Models
 	    public string   FullName => $"{FirstName} {LastName}";
 	    public DateTime	DateOfBirth { get; set; }
 	    public string	EmailAddress { get; set; }
+		/// <summary>
+		/// master added 1
+		/// </summary>
 	    public string	Password { get; set; }
+		/// <summary>
+		/// master added 2
+		/// </summary>
 	    public bool		IsAdmin { get; set; }
 	}
 }
